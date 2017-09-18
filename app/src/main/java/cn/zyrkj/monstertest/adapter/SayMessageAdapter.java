@@ -1,10 +1,8 @@
 package cn.zyrkj.monstertest.adapter;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +15,8 @@ import java.util.List;
 
 import cn.zyrkj.monstertest.R;
 import cn.zyrkj.monstertest.bean.SayMessage;
+import cn.zyrkj.monstertest.model.NineGridTestModel;
+import cn.zyrkj.monstertest.view.NineGridTestLayout;
 
 /**
  * sayMessage适配器
@@ -74,21 +74,20 @@ public class SayMessageAdapter extends BaseAdapter{
         mViewPaper = switchable.findViewById(R.id.vp);
 
         //显示的图片  
-        images = new ArrayList<ImageView>();
+        images = new ArrayList<>();
         for(int i = 0; i < imageIds.length; i++){
             ImageView imageView = new ImageView(switchable.getContext());
             imageView.setBackgroundResource(imageIds[i]);
             images.add(imageView);
         }
         //显示的小点  
-        dots = new ArrayList<View>();
+        dots = new ArrayList<>();
         dots.add(switchable.findViewById(R.id.dot_0));
         dots.add(switchable.findViewById(R.id.dot_1));
         dots.add(switchable.findViewById(R.id.dot_2));
         dots.add(switchable.findViewById(R.id.dot_3));
         dots.add(switchable.findViewById(R.id.dot_4));
 
-//        title = (TextView) findViewById(R.id.title);
         title = switchable.findViewById(R.id.title);
         title.setText(titles[0]);
 
@@ -206,10 +205,10 @@ public class SayMessageAdapter extends BaseAdapter{
         
         switch (getItemViewType(position)){
             case TYPE_MESSAGE:
-                messageViewHolder = new MessageViewHolder();
                 SayMessage message = list.get(position);
                 if(convertView == null){
                     convertView = mInflater.inflate(R.layout.list_item, null);
+                    messageViewHolder = new MessageViewHolder(convertView);
                     messageViewHolder.userName = (TextView) convertView.findViewById(R.id.userName);
                     //setTag()
                     convertView.setTag(messageViewHolder);
@@ -218,6 +217,8 @@ public class SayMessageAdapter extends BaseAdapter{
                     messageViewHolder = (MessageViewHolder) convertView.getTag();
                 }
                 messageViewHolder.userName.setText(message.getUser().getUserName());
+                messageViewHolder.layout.setUrlList(message.getNineGridTestModel().urlList);
+                messageViewHolder.layout.setIsShowAll(message.getNineGridTestModel().isShowAll);
                 break;
             case TYPE_SWITCHABLE:
                 switchableViewHolder = new SwitchableViewHolder();
@@ -241,15 +242,27 @@ public class SayMessageAdapter extends BaseAdapter{
     class MessageViewHolder {
         protected ImageView userImage;
         protected TextView userName;
+        protected NineGridTestLayout layout;
 
         public MessageViewHolder() {
             super();
+        }
+
+        public MessageViewHolder(View view) {
+            layout = (NineGridTestLayout) view.findViewById(R.id.layout_nine_grid);
         }
 
         public MessageViewHolder(ImageView userImage, TextView userName) {
             this.userImage = userImage;
             this.userName = userName;
         }
+    }
+
+    private int getListSize(List<NineGridTestModel> list) {
+        if (list == null || list.size() == 0) {
+            return 0;
+        }
+        return list.size();
     }
 
     class SwitchableViewHolder {
@@ -267,7 +280,6 @@ public class SayMessageAdapter extends BaseAdapter{
             this.dots = dots;
         }
     }
-
 
     public ViewPager getmViewPaper() {
         return mViewPaper;

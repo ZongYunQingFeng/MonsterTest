@@ -3,6 +3,8 @@ package cn.zyrkj.monstertest.bean;
 import java.util.ArrayList;
 import java.util.Date;
 
+import cn.zyrkj.monstertest.model.NineGridTestModel;
+
 /**
  * 蜜曰消息列表
  */
@@ -13,7 +15,7 @@ public class SayMessage {
     //内容
     private String content;
     //相册
-    private ArrayList<MyImage> myImageList;
+    private NineGridTestModel nineGridTestModel;
     //访客评论
     private ArrayList<VisitMessage> visitMessage;
     //创建时间
@@ -25,11 +27,10 @@ public class SayMessage {
         super();
     }
 
-    public SayMessage(User user, String content, ArrayList<MyImage> myImageList, ArrayList<VisitMessage> visitMessage, Date date, String type) {
-        super();
+    public SayMessage(User user, String content, NineGridTestModel nineGridTestModel, ArrayList<VisitMessage> visitMessage, Date date, String type) {
         this.user = user;
         this.content = content;
-        this.myImageList = myImageList;
+        this.nineGridTestModel = nineGridTestModel;
         this.visitMessage = visitMessage;
         this.date = date;
         this.type = type;
@@ -51,12 +52,12 @@ public class SayMessage {
         this.content = content;
     }
 
-    public ArrayList<MyImage> getMyImageList() {
-        return myImageList;
+    public NineGridTestModel getNineGridTestModel() {
+        return nineGridTestModel;
     }
 
-    public void setMyImageList(ArrayList<MyImage> myImageList) {
-        this.myImageList = myImageList;
+    public void setNineGridTestModel(NineGridTestModel nineGridTestModel) {
+        this.nineGridTestModel = nineGridTestModel;
     }
 
     public ArrayList<VisitMessage> getVisitMessage() {

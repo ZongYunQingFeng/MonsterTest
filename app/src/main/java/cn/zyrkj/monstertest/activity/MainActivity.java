@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.nineoldandroids.view.ViewHelper;
 
@@ -32,8 +30,8 @@ import cn.zyrkj.monstertest.R;
 import cn.zyrkj.monstertest.adapter.SayMessageAdapter;
 import cn.zyrkj.monstertest.bean.Product;
 import cn.zyrkj.monstertest.bean.SayMessage;
-import cn.zyrkj.monstertest.bean.Switchable;
 import cn.zyrkj.monstertest.bean.User;
+import cn.zyrkj.monstertest.model.NineGridTestModel;
 import cn.zyrkj.monstertest.util.Util;
 import cn.zyrkj.monstertest.view.DragLayout;
 
@@ -48,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     //tab
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
-    private List<String> mTitleList = new ArrayList<String>();//页卡标题集合
+    private List<String> mTitleList = new ArrayList<>();//页卡标题集合
     private View view1, view2, view3;//页卡视图
     private List<View> mViewList = new ArrayList<>();//页卡视图集合
     
@@ -66,6 +64,77 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private static boolean isExit = false;
     // 幻灯片
     private ScheduledExecutorService scheduledExecutorService;
+    
+    //九宫格图片展示
+    private List<NineGridTestModel> mList = new ArrayList<>();
+    private String[] mUrls = new String[]{"http://d.hiphotos.baidu.com/image/h%3D200/sign=201258cbcd80653864eaa313a7dca115/ca1349540923dd54e54f7aedd609b3de9c824873.jpg",
+            "http://d.hiphotos.baidu.com/image/h%3D200/sign=ea218b2c5566d01661199928a729d498/a08b87d6277f9e2fd4f215e91830e924b999f308.jpg",
+            "http://img4.imgtn.bdimg.com/it/u=3445377427,2645691367&fm=21&gp=0.jpg",
+            "http://img4.imgtn.bdimg.com/it/u=2644422079,4250545639&fm=21&gp=0.jpg",
+            "http://img5.imgtn.bdimg.com/it/u=1444023808,3753293381&fm=21&gp=0.jpg",
+            "http://img4.imgtn.bdimg.com/it/u=882039601,2636712663&fm=21&gp=0.jpg",
+            "http://img4.imgtn.bdimg.com/it/u=4119861953,350096499&fm=21&gp=0.jpg",
+            "http://img5.imgtn.bdimg.com/it/u=2437456944,1135705439&fm=21&gp=0.jpg",
+            "http://img2.imgtn.bdimg.com/it/u=3251359643,4211266111&fm=21&gp=0.jpg",
+            "http://img4.duitang.com/uploads/item/201506/11/20150611000809_yFe5Z.jpeg",
+            "http://img5.imgtn.bdimg.com/it/u=1717647885,4193212272&fm=21&gp=0.jpg",
+            "http://img5.imgtn.bdimg.com/it/u=2024625579,507531332&fm=21&gp=0.jpg"};
+
+    /*
+    * 九宫格图片展示
+    * */
+    private void initListData() {
+        NineGridTestModel model1 = new NineGridTestModel();
+        model1.urlList.add(mUrls[0]);
+        mList.add(model1);
+
+        NineGridTestModel model2 = new NineGridTestModel();
+        model2.urlList.add(mUrls[4]);
+        mList.add(model2);
+//
+//        NineGridTestModel model3 = new NineGridTestModel();
+//        model3.urlList.add(mUrls[2]);
+//        mList.add(model3);
+
+        NineGridTestModel model4 = new NineGridTestModel();
+        for (String url : mUrls) {
+            model4.urlList.add(url);
+        }
+        for (int i = 0; i < mUrls.length; i++) {
+        }
+        model4.isShowAll = false;
+        mList.add(model4);
+
+        NineGridTestModel model5 = new NineGridTestModel();
+        for (String url : mUrls) {
+            model5.urlList.add(url);
+        }
+        model5.isShowAll = true;//显示全部图片
+        mList.add(model5);
+
+        NineGridTestModel model6 = new NineGridTestModel();
+        for (int i = 0; i < 9; i++) {
+            model6.urlList.add(mUrls[i]);
+        }
+        mList.add(model6);
+
+        NineGridTestModel model7 = new NineGridTestModel();
+        for (int i = 3; i < 7; i++) {
+            model7.urlList.add(mUrls[i]);
+        }
+        mList.add(model7);
+
+        NineGridTestModel model8 = new NineGridTestModel();
+        for (int i = 3; i < 6; i++) {
+            model8.urlList.add(mUrls[i]);
+        }
+        mList.add(model8);
+    }
+
+    /*
+    * end 九宫格图片展示
+    * */
+    
 
     /**
      * 按2次退出应用
@@ -119,14 +188,26 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         ArrayList<Product> productlist = new ArrayList<>();
         SayMessage message1 = new SayMessage();
         message1.setUser(new User("纵横天下", "", productlist));
+        message1.setNineGridTestModel(mList.get(0));
         SayMessage message2 = new SayMessage();
         message2.setUser(new User("云淡风轻", "", productlist));
+        message2.setNineGridTestModel(mList.get(2));
         SayMessage message3 = new SayMessage();
         message3.setUser(new User("清风微徐", "", productlist));
-        sayMessageList.add(message1);
-        sayMessageList.add(message2);
+        message3.setNineGridTestModel(mList.get(3));
+        SayMessage message4 = new SayMessage();
+        message4.setUser(new User("徐徐扶风", "", productlist));
+        message4.setNineGridTestModel(mList.get(4));
+        SayMessage message5 = new SayMessage();
+        message5.setUser(new User("风卷雷击", "", productlist));
+        message5.setNineGridTestModel(mList.get(5));
+        sayMessageList.add(message5);
+        sayMessageList.add(message4);
         sayMessageList.add(message3);
+        sayMessageList.add(message2);
+        sayMessageList.add(message1);
         mAdapter = new SayMessageAdapter(this, sayMessageList);
+//        mAdapter.setmList(mList);
         mListView.setAdapter(mAdapter);
     }
 
@@ -140,7 +221,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     productlist = new ArrayList<Product>();
                     SayMessage newMessage = new SayMessage();
                     newMessage.setUser(new User("横贯八方", "", productlist));
-                    sayMessageList.add(newMessage);
+                    newMessage.setNineGridTestModel(mList.get(6));
+                    sayMessageList.add(1,newMessage);
                     mAdapter.notifyDataSetChanged();
                     mSwipeLayout.setRefreshing(false);
                     break;
@@ -360,6 +442,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         initDragLayout();
         initView();
         initTabLayout();
+        initListData();
         initSwipeRefreshLayout();
     }
     
