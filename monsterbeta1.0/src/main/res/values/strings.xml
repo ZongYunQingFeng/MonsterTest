@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Monster Pub</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <!--title-->
+    <string name="title">Monster</string>
+    <!--tab-->
+    <string name="play_btn">玩耍</string>
+    <string name="say_btn">蜜曰</string>
+    <string name="friend_btn">朋友</string>
+    <string name="self_btn">我</string>
+    <!--play_view-->
+    <string name="newGame">新的游戏</string>
+    <string name="newGame_msg">掀起一波新高潮</string>
+    <string name="oldRecord">旧的回忆</string>
+    <string name="oldRecord_msg">暂无回忆</string>
+    <string name="record1">当前跳动2017次  &gt;</string>
+    <string name="record2">一大波高潮  &gt;</string>
+    <!--friend_view-->
+    <string name="friendText">朋友</string>
+    <!--say_view-->
+    <string name="userName">纵横天下</string>
+    <string name="userImage"></string>
+    <string name="type">［ 闲聊 ］</string>
+    <string name="content">天上白玉京，十二楼五城。仙人抚我顶，结发受长生。</string>
+    <string name="vContent">评论内容...</string>
+    <string name="visitCount">512</string>
+    <string name="praiseCount">125</string>
+    <string name="readContent">阅读</string>
+    <string name="readCount">999</string>
+    <!--self_view-->
+    <string name="user">游客</string>
+    <string name="gift">送她一只</string>
+    <!--setting-->
+    <string name="settingTitle">设置</string>
+    <string name="loginout">退出登录</string>
+    <!--registerAndLogin-->
+    <string name="to_register_btn">去注册</string>
+    <string name="register_btn">注册</string>
+
+    <string name="to_login_btn">去登录</string>
+    <string name="login_btn">登录</string>
+
+    <string name="register_username">username</string>
+    <string name="register_password">password</string>
+
+    <string name="login_username">username</string>
+    <string name="login_password">password</string>
+</resources>
