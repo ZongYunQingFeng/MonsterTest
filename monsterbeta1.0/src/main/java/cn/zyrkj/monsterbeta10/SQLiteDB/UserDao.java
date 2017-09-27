@@ -3,8 +3,10 @@ package cn.zyrkj.monsterbeta10.SQLiteDB;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.zyrkj.monsterbeta10.bean.User;
@@ -30,9 +32,10 @@ public class UserDao {
         ContentValues cv = new ContentValues();
         
         //往ContentValues对象存放数据，键-值对模式  
-        cv.put("id", user.getUid());
         cv.put("username", user.getUsername());
         cv.put("password", user.getPassword());
+        cv.put("date", user.getDate());
+        cv.put("current", user.getCurrent());
         
         //调用insert方法，将数据插入数据库  
         db.insert(userDBHelper.TABLE_NAME, null, cv);
@@ -64,6 +67,8 @@ public class UserDao {
         ContentValues cv = new ContentValues();
         cv.put("username", user.getUsername());
         cv.put("password", user.getPassword());
+        cv.put("date", user.getDate());
+        cv.put("current", user.getCurrent());
         
         //where 子句 "?"是占位符号，对应后面的"1",  
         String whereClause="id=?";
@@ -78,8 +83,10 @@ public class UserDao {
     }
         
     //查
+    //查询所有用户
     public List<User> QueryAllUser() {
         db = userDBHelper.getReadableDatabase();
+        List<User> userList = new ArrayList<>();
         //参数1：表名   
         //参数2：要想显示的列   
         //参数3：where子句   
@@ -87,17 +94,20 @@ public class UserDao {
         //参数5：分组方式   
         //参数6：having条件   
         //参数7：排序方式   
-        Cursor cursor = db.query(userDBHelper.TABLE_NAME, new String[]{"id","username","password"}, null, null, null, null, null);
+        Cursor cursor = db.query(userDBHelper.TABLE_NAME, new String[]{"id","username","password","date","current"}, null, null, null, null, null);
         if (cursor.getCount() > 0) {
-            List<User> userList = new ArrayList<>();
+            
             while(cursor.moveToNext()){
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
                 String username = cursor.getString(cursor.getColumnIndex("username"));
                 String password = cursor.getString(cursor.getColumnIndex("password"));
+                long date = cursor.getLong(cursor.getColumnIndex("date"));
+                int current = cursor.getInt(cursor.getColumnIndex("current"));
                 User user = new User(id, username, password);
+                user.setDate(date);
+                user.setCurrent(current);
                 userList.add(user);
             }
-            return userList;
         }
         
         //关闭数据库  
@@ -107,6 +117,40 @@ public class UserDao {
         if (db != null) {
             db.close();
         }
+        return userList;
+    }
+
+    //查询当前用户
+    public User QueryCurrentUser() {
+        List<User> userList = QueryAllUser();
+        for (User u: userList
+             ) {
+            Log.e("userInDB::",u.toString());
+            if (u.getCurrent() == 1) {
+                User user = u;
+                return user;
+            }
+        }
+        return null;
+    }
+
+    //根据username查询用户
+    public User QueryUserByName(String username) {
+        db = userDBHelper.getReadableDatabase();
+        Cursor cursor = db.query(userDBHelper.TABLE_NAME, new String[]{"id","username","password","date","current"}, "username=?", new String[]{username}, null, null, null);
+
+        if (cursor.getCount()>0) {
+            cursor.moveToFirst();
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String password = cursor.getString(cursor.getColumnIndex("password"));
+            long date = cursor.getLong(cursor.getColumnIndex("date"));
+            int current = cursor.getInt(cursor.getColumnIndex("current"));
+            User user = new User(id, username, password);
+            user.setDate(date);
+            user.setCurrent(current);
+            return user;
+        }
+        
         return null;
     }
 }

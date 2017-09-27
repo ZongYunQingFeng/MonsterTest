@@ -1,5 +1,6 @@
 package cn.zyrkj.monsterbeta10.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +11,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,17 +30,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import cn.zyrkj.monsterbeta10.R;
+import cn.zyrkj.monsterbeta10.SQLiteDB.UserDBHelper;
+import cn.zyrkj.monsterbeta10.SQLiteDB.UserDao;
 import cn.zyrkj.monsterbeta10.adapter.SayMessageAdapter;
 import cn.zyrkj.monsterbeta10.bean.Customer;
 import cn.zyrkj.monsterbeta10.bean.Product;
 import cn.zyrkj.monsterbeta10.bean.SayMessage;
+import cn.zyrkj.monsterbeta10.bean.User;
 import cn.zyrkj.monsterbeta10.model.NineGridTestModel;
-import cn.zyrkj.monsterbeta10.util.LoginStateApplication;
+import cn.zyrkj.monsterbeta10.okhttp.StateCheckCallbackListener;
 import cn.zyrkj.monsterbeta10.util.Util;
 
 public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
     private Context mContext;
     private Intent intent;
+    public static Activity mMainActivity = null;
+
     //tab
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
@@ -84,6 +88,9 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
+        mMainActivity = this;
+        intent = new Intent();
+        
         //底部导航
         initTabLayout();
         //九宫格图片
@@ -94,12 +101,31 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         initView();
         //自定义标题栏
         setCustomActionBar(0);
-        //检测登录是否过期
-        checksCache();
-        app.setIsLogin(true);
     }
-    
-    
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkLogin(new StateCheckCallbackListener() {
+            @Override
+            public void onValid() {
+                UserDBHelper userDBHelper = new UserDBHelper(mContext, UserDBHelper.TABLE_NAME, null, UserDBHelper.DB_VERSION);
+                UserDao userDao = new UserDao(userDBHelper);
+                User user = userDao.QueryCurrentUser();
+                
+                Toast.makeText(MainActivity.this,"已登录用户："+user.getUsername(),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onInvalid() {
+                intent.setClass(mContext,LoginActivity.class);
+                intent.putExtra("canBackMain",false);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
     //自定义标题栏
     private void initView() {
         ListView lv = (ListView) view4.findViewById(R.id.lv);
@@ -110,7 +136,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     int position, long arg3) {
-                intent = new Intent();
                 switch (position) {
                     case 3:
                         intent.setClass(mContext,SettingActivity.class);
@@ -133,9 +158,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setCustomView(mActionBarView, lp);
-
-        
-        
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
@@ -473,7 +495,9 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         refreshHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 2000);
 
     }
+
     /**
      * end 下拉刷新
      * */
+
 }

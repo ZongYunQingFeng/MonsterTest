@@ -21,7 +21,7 @@ public class UserDBHelper extends SQLiteOpenHelper {
     // 当第一次创建数据库的时候，调用该方法
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String sql = "create table if not exists " + TABLE_NAME + " (id int,username varchar(20),password varchar(20))";
+        String sql = "create table if not exists " + TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT,username varchar(20),password varchar(20),date int,current long)";
         sqLiteDatabase.execSQL(sql);
     }
 

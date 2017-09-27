@@ -2,24 +2,49 @@ package cn.zyrkj.monsterbeta10.util;
 
 import android.app.Application;
 
+import cn.zyrkj.monsterbeta10.SQLiteDB.UserDao;
+
 /**
  * Created by Administrator on 2017/9/23.
  */
 
 public class LoginStateApplication extends Application {
-    private boolean isLogin;
+    //登录是否过期
+    private boolean loginStateValid;
+    //是否登录
+    private boolean loginState;
+    //网络是否连接
+    private boolean networkState;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        setIsLogin(false);
+        setLoginStateValid(false);
+        setLoginState(false);
+        setNetworkState(false);
     }
 
-    public boolean getIsLogin() {
-        return this.isLogin;
+    public boolean isLoginStateValid() {
+        return loginStateValid;
     }
 
-    public void setIsLogin(boolean isLogin) {
-        this.isLogin = isLogin;
+    public void setLoginStateValid(boolean loginStateValid) {
+        this.loginStateValid = loginStateValid;
+    }
+
+    public boolean isLoginState() {
+        return loginState;
+    }
+
+    public void setLoginState(boolean loginState) {
+        this.loginState = loginState;
+    }
+
+    public boolean isNetworkState() {
+        return networkState;
+    }
+
+    public void setNetworkState(boolean networkState) {
+        this.networkState = networkState;
     }
 }

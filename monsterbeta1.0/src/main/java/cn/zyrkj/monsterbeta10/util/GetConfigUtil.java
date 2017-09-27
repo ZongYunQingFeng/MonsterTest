@@ -13,6 +13,7 @@ import java.util.Properties;
 
 public class GetConfigUtil {
     public String serverUrl;
+    public long cacheTime = 1L;
 
     public GetConfigUtil(Context context) {
         AssetManager am = context.getAssets();
@@ -23,6 +24,12 @@ public class GetConfigUtil {
             props.load(is);
 
             serverUrl = props.getProperty("serverUrl");
+            String str = props.getProperty("cacheTime");
+
+            String[] split = str.trim().split("\\*");
+            for (String s : split) {
+                cacheTime *= Long.parseLong(s);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

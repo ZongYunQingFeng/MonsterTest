@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 
 import cn.zyrkj.monsterbeta10.R;
+import cn.zyrkj.monsterbeta10.SQLiteDB.UserDBHelper;
+import cn.zyrkj.monsterbeta10.SQLiteDB.UserDao;
+import cn.zyrkj.monsterbeta10.bean.User;
 
 /**
  * Created by Administrator on 2017/9/23.
@@ -26,8 +29,6 @@ public class SettingActivity extends BaseActivity{
         setBackBtnAndTitle();
 
         ///检测登录是否过期
-        checksCache();
-        app.setIsLogin(false);
     }
 
     private void initSetting() {
@@ -41,8 +42,17 @@ public class SettingActivity extends BaseActivity{
                 /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 }*/
+                UserDBHelper userDBHelper = new UserDBHelper(mContext, UserDBHelper.TABLE_NAME, null, UserDBHelper.DB_VERSION);
+                UserDao userDao = new UserDao(userDBHelper);
+                User user = userDao.QueryCurrentUser();
+                user.setCurrent(0);
+                userDao.ModifyUser(user);
+                MainActivity.mMainActivity.finish();
+                
                 intent.setClass(mContext, LoginActivity.class);
+                intent.putExtra("canBackMain",false);
                 startActivity(intent);
+                finish();
             }
         });
     }
